@@ -99,7 +99,7 @@ class Timeseriesgui(object):
     def __init__(self,controller,app):
 
         self.controller = controller
-        self.app 		= app 
+        self.app 		= app
 
         self.controller.register(
             "recording_state_changed",
@@ -111,14 +111,14 @@ class Timeseriesgui(object):
             self.on_connection_state_changed
         )
         self.connected      = False
-        self.recording      = False 
+        self.recording      = False
         self.currentport    = ''
         full_ports          = list(serial.tools.list_ports.comports())
         self.portnames      = [item[0] for item in full_ports]
         self.mode = self.controller.serial_getmode()
         self.canned_data_interval = 1/SAMPLING_FREQUENCY
         self.tdelta = timedelta(seconds=self.canned_data_interval)
-        # Filtered data True or False. 
+        # Filtered data True or False.
         self.filter_data = True #filter_data
         self.a, self.b = signal.butter(FILTER_ORDER, CUTOFF, btype=FILTER_TYPE)
         self.y_filtered = []
@@ -144,16 +144,16 @@ class Timeseriesgui(object):
         }
         _LOGGER.debug(stats)
 
-    # Get's new data off the serial port. 
+    # Get's new data off the serial port.
     def process_data(self):
         y_batch = []
-        # get data off the stack. 
+        # get data off the stack.
         while not self.controller.data_queue.empty():
             y_batch = self.controller.data_queue.get()
 
         t       = datetime.now()
         value   = y_batch
-    
+
         for i in range(len(y_batch)):
             value   = y_batch[i]
             t       = t + self.tdelta
@@ -188,9 +188,9 @@ class Timeseriesgui(object):
             self.x.append(t)
             if len(self.x) > self.buffer_size:
                 self.x.pop(0)
-        
+
         # Log some stats about the data
-        # self._log_stats()     
+        # self._log_stats()
 
     def return_layout(self):
 
@@ -220,14 +220,14 @@ class Timeseriesgui(object):
                     n_intervals=0
                 ),
 
-            ] )      
-         
+            ] )
+
         @self.app.callback(Output('live-update-time-series', 'figure'),
                       [Input('interval-component', 'n_intervals')])
         def update_graph_scatter(n):
             self.mode = self.controller.serial_getmode()
             if 'a' in self.mode:
-                # update from the data queue. 
+                # update from the data queue.
                 self.process_data()
 
             if len(self.x) > 0:
@@ -301,7 +301,7 @@ class Timeseriesgui(object):
                 )
 
                 return {'data': data, 'layout': layout}
-        #         
+        #
         return self.layout
         # _LOGGER.debug('App running at: http://localhost:%s' % PORT)
         # app.run_server(port=PORT)
@@ -310,12 +310,12 @@ class Timeseriesgui(object):
         if connected:
             self.connected = True
         else:
-            self.connected = False 
+            self.connected = False
 
     def on_record_state_changed(self, recording):
         if recording:
             self.recording = True
         else:
-            self.recording = False 
+            self.recording = False
 
 

@@ -21,7 +21,7 @@ import queue
 import numpy as np
 import base64
 #import io
-#import decimal 
+#import decimal
 from plotly import exceptions, optional_imports
 import plotly.colors as clrs
 from plotly.graph_objs import graph_objs
@@ -47,7 +47,7 @@ class Tomogui(object):
     def __init__(self, controller, app):
 
         self.controller = controller
-        self.app= app 
+        self.app= app
 
         self.n_el = self.controller.n_el
         self.algorithm = self.controller.algorithm
@@ -63,23 +63,23 @@ class Tomogui(object):
         )
 
         self.connected = False
-        self.recording = False 
+        self.recording = False
         self.currentport = ''
         full_ports = list(serial.tools.list_ports.comports())
         self.portnames  = [item[0] for item in full_ports]
 
-        self.vmin = 0 
+        self.vmin = 0
         self.vmax = 1000
         self.mode = self.controller.serial_getmode()
         # self.rsvaluemin = self.vmin
         # self.rsvaluemax = self.vmax
-        self.run_file = False 
+        self.run_file = False
 
         self.n_electrodes = ['8','16','32']
         self.algorithms   = ['jac','bp','greit']
         self.img = None
 
-    # Get's new data off the serial port. 
+    # Get's new data off the serial port.
     def process_data(self):
         try:
             self.img = self.controller.image_queue.get_nowait()
@@ -94,7 +94,7 @@ class Tomogui(object):
 
     def run_file(self):
         self.run_file = True
-        # this should be a bool so that self. controller.step_file is called every update interval. 
+        # this should be a bool so that self. controller.step_file is called every update interval.
         # self.controller.step_file()
 
     def map_z2color(self,zval, colormap, vmin, vmax):
@@ -116,18 +116,18 @@ class Tomogui(object):
     def return_layout(self):
 
         self.layout = html.Div( [
-                # stylesheet. 
+                # stylesheet.
                 html.Link(
                     rel='stylesheet',
                     href='/static/bootstrap.min.css'
                 ),
-                html.Div( [  
-                    # The histogram and controls part: 
+                html.Div( [
+                    # The histogram and controls part:
                     html.Div( [
 
                         html.Div( [
                             html.Div( [
-                            html.P('Algorithm Settings: '),    
+                            html.P('Algorithm Settings: '),
                             ], style={'width': '50%', 'display': 'inline-block','text-align': 'center'} ),
 
                             html.Div( [
@@ -164,31 +164,31 @@ class Tomogui(object):
 
                         html.Div( [
                             html.P('Offline File Control: '),
-                            # the offline controls 
+                            # the offline controls
                             html.Div( [
-                 
+
                                 dcc.Upload(id='readfromfile',children='Read File',className ='btn btn-outline-dark'),
 
                                 html.Button(children='Step', id='stepfile', type='submit',className ='btn btn-outline-dark'),
-               
+
                                 html.Button(children='Step Back', id='stepback', type='submit',className ='btn btn-outline-dark'),
-                      
+
                                 html.Button(children='Run', id='runfile', type='submit',className ='btn btn-outline-dark'),
-                  
+
                                 html.Button(children='Reset', id='resetfilem', type='submit',className='btn btn-outline-dark'),
-                
+
                             ], className='btn-group', style={'width': '100%', 'display': 'inline-block'} ),
 
                         ], style={'width': '100%', 'display': 'inline-block'} ),
 
                         html.Div( [
-                
+
                             html.P('Realtime Control: '),
-                  
+
                             html.Button(children='Baseline', id='baseline', type='submit',className ='btn btn-outline-dark'),
-             
+
                             html.Button(children='Autoscale', id='autoscale', type='submit',className ='btn btn-outline-dark'),
-                     
+
                             html.Div( [
                             html.Div(id='output-container-range-slider')
                             ], className='btn-group', style={'width': '100%', 'display': 'inline-block','text-align': 'center'} ),
@@ -220,7 +220,7 @@ class Tomogui(object):
                             ),
                             ], style={'width': '20%', 'display': 'inline-block','text-align': 'center'} ),
 
-                     
+
                             html.Div( [
                                 html.P('Range Max: '),
                             ], style={'width': '20%', 'display': 'inline-block','text-align': 'center'} ),
@@ -233,10 +233,10 @@ class Tomogui(object):
                                 style={'width': 80},
                                 value='1000'
                             ),
-                            ] , style={'width': '20%', 'display': 'inline-block','text-align': 'center'}), 
-                         
+                            ] , style={'width': '20%', 'display': 'inline-block','text-align': 'center'}),
+
                         ], style={'width': '100%', 'display': 'inline-block'} ),
-                        
+
 
                         html.Div( [
                         dcc.Graph(
@@ -253,7 +253,7 @@ class Tomogui(object):
 
 
                     html.Div( [
-                        # The big image graph. 
+                        # The big image graph.
                         dcc.Graph(
                             id='live-update-image',
                             animate=False,
@@ -266,7 +266,7 @@ class Tomogui(object):
                         interval=PLOT_REFRESH_INTERVAL,
                         n_intervals=0
                     ),
-                    ] , style={'width': '50%', 'display': 'inline-block','text-align': 'center'}), 
+                    ] , style={'width': '50%', 'display': 'inline-block','text-align': 'center'}),
 
 
                 ], style={'width': '100%', 'display': 'inline-block'} ),
@@ -280,12 +280,12 @@ class Tomogui(object):
                 html.Ul(id="aautoscale"),
                 html.Ul(id="a"),
                 html.Ul(id="ab"),
-            ] )      
+            ] )
 
         @self.app.callback(Output("afilelist", "children"),
                [Input('readfromfile', 'contents')],
               [State('readfromfile', 'filename'),
-               State('readfromfile', 'last_modified')])       
+               State('readfromfile', 'last_modified')])
         def readfile_output(contents, filename, date):
             if filename is not None:
                 content_type, content_string = contents.split(',')
@@ -293,7 +293,7 @@ class Tomogui(object):
                 self.controller.load_file(filename,decoded)
                 self.run_file = False
                 return 'file loaded'
-            else: 
+            else:
                 return 'no file'
 
         @self.app.callback(
@@ -305,7 +305,7 @@ class Tomogui(object):
                 self.controller.step_file()
                 self.run_file = False
                 return 'step'
-            else: 
+            else:
                 return 'not step'
 
         @self.app.callback(
@@ -317,7 +317,7 @@ class Tomogui(object):
                 self.controller.step_file_back()
                 self.run_file = False
                 return 'step back'
-            else: 
+            else:
                 return 'not step back'
 ###
         @self.app.callback(
@@ -327,7 +327,7 @@ class Tomogui(object):
             dash.dependencies.Input('setmode', 'n_clicks')
             ], )
         def update_output(selected_algorithm,selected_electrodes,n_clicks):
-            if n_clicks is None:            
+            if n_clicks is None:
                 c = self.controller.serial_getmode()
                 selected_algorithm = self.controller.algorithm
                 if 'c' in c:
@@ -339,19 +339,19 @@ class Tomogui(object):
                 elif 'e' in c:
                     print ('32 electrode mode')
                     selected_electrodes = '32'
-                else: 
+                else:
                     selected_electrodes = '- non-imaging mode'
 
             if n_clicks is not None:
-                # this is getting called whenever we load it, which is a mistake. 
+                # this is getting called whenever we load it, which is a mistake.
                 print(selected_algorithm)
                 print(selected_electrodes)
 
-                # change the setting in firmware. 
-                if self.connected: 
-                    if int(selected_electrodes) == 8: 
+                # change the setting in firmware.
+                if self.connected:
+                    if int(selected_electrodes) == 8:
                         value = 'c'
-                    elif int(selected_electrodes) == 16: 
+                    elif int(selected_electrodes) == 16:
                         value = 'd'
                     else: # 32 electrodes
                         value = 'e'
@@ -360,13 +360,13 @@ class Tomogui(object):
 
                 self.algorithm  = selected_algorithm
                 self.n_el       = int(selected_electrodes)
-                # if the algorithm setting is change, we need to re-initialize the whole thing. 
+                # if the algorithm setting is change, we need to re-initialize the whole thing.
                 if self.algorithm  == 'greit':
                     self.gx,self.gy,self.ds = self.controller.greit_params()
                     self.img = self.ds # np.zeros((32,32),dtype=float)
-                else: 
+                else:
                     self.x,self.y,self.tri,self.el_pos = self.controller.plot_params()
-                    self.img = np.zeros(self.x.shape[0]) 
+                    self.img = np.zeros(self.x.shape[0])
 
             return selected_algorithm+selected_electrodes
 
@@ -377,7 +377,7 @@ class Tomogui(object):
             if n_clicks is not None:
                 self.run_file = True
                 return 'runfile'
-            else: 
+            else:
                 return 'not runfile'
 
         @self.app.callback(
@@ -385,11 +385,11 @@ class Tomogui(object):
                     [Input("resetfilem", "n_clicks")], )
         def resetfilemarker(n_clicks):
             if n_clicks is not None:
-                self.controller.reset_file()  
+                self.controller.reset_file()
                 self.run_file = False
                 return 'reset filem'
-            else: 
-                return 'reset not'   
+            else:
+                return 'reset not'
 
         @self.app.callback(
                     Output("abaseline", "children"),
@@ -398,7 +398,7 @@ class Tomogui(object):
             if n_clicks is not None:
                 self.set_baseline()
                 return 'baseline'
-            else: 
+            else:
                 return 'not baseline'
 
         @self.app.callback(
@@ -406,7 +406,7 @@ class Tomogui(object):
                     [Input("autoscale", "n_clicks")], )
         def autoscale_data(n_clicks):
             if n_clicks is not None:
-                autoscale()  
+                autoscale()
                 return  self.vmax
 
         @self.app.callback(
@@ -414,7 +414,7 @@ class Tomogui(object):
                     [Input("autoscale", "n_clicks")], )
         def autoscale_data(n_clicks):
             if n_clicks is not None:
-                autoscale()  
+                autoscale()
                 return  self.vmin
 
         @self.app.callback(
@@ -423,12 +423,12 @@ class Tomogui(object):
         def update_output(value):
             print ('the the update value function')
             print (value)
-            if value[0] > value[1]: 
+            if value[0] > value[1]:
                 self.vmin = value[1]
-                self.vmax = value[0] 
-            else: 
+                self.vmax = value[0]
+            else:
                 self.vmin = value[0]
-                self.vmax = value[1]                
+                self.vmax = value[1]
 
             return ('('+str(self.vmin)+','+str(self.vmax)+')') #format(value)
 
@@ -438,7 +438,7 @@ class Tomogui(object):
              Input('maximum_range', 'value')])
         def display_controls(datasource_1_value, datasource_2_value):
                 # print ('display controls')
-                # print (datasource_1_value, datasource_2_value) 
+                # print (datasource_1_value, datasource_2_value)
 
                 DYNAMIC_CONTROLS = {}
                 therange = int(datasource_2_value) - int(datasource_1_value)
@@ -461,12 +461,12 @@ class Tomogui(object):
             Output('live-update-image', 'figure'),
             [Input('interval-component', 'n_intervals')])
         def update_graph_scatter(n):
-            # update the data queue. 
-            if self.run_file is True: 
+            # update the data queue.
+            if self.run_file is True:
                if self.controller.step_file():
                   print ('stepped the file')
                   # self.process_data()
-               else: 
+               else:
                     self.run_file = False
 
             self.mode = self.controller.serial_getmode()
@@ -476,7 +476,7 @@ class Tomogui(object):
             if self.algorithm  == 'greit':
                 self.gx,self.gy,self.ds = self.controller.greit_params()
 
-                # If algorithm is GREIT 
+                # If algorithm is GREIT
                 layout = go.Layout(
                     width = 500,
                     height = 500,
@@ -519,7 +519,7 @@ class Tomogui(object):
                             ),
                     )
                 ]
-            else: 
+            else:
 
                 camera = dict(
                     up=dict(x=0, y=0, z=1),
@@ -552,22 +552,22 @@ class Tomogui(object):
 
                 if self.img is None or (len(self.el_pos) != self.controller.n_el):
                     self.x,self.y,self.tri,self.el_pos = self.controller.plot_params()
-                    self.img = np.zeros(self.x.shape[0]) 
+                    self.img = np.zeros(self.x.shape[0])
                     self.img[1] = 2.0
 
-                if self.vmin >= self.vmax: 
-                    self.vmin = 0 
+                if self.vmin >= self.vmax:
+                    self.vmin = 0
                     self.vmax = 1000
 
                 simplices=self.tri
                 colormap = cm.plasma # specify the colormap
-                if len(self.img) == 0: 
-                    self.img = np.zeros(self.x.shape[0]) 
+                if len(self.img) == 0:
+                    self.img = np.zeros(self.x.shape[0])
                     self.img[1] = 2.0
 
                 points3D = np.vstack((self.x,self.y,self.img)).T
-                tri_vertices=map(lambda index: points3D[index], simplices)# vertices of the surface triangles     
-                zmean=[np.mean(tri[:,2]) for tri in tri_vertices ]# mean values of z-coordinates of 
+                tri_vertices=map(lambda index: points3D[index], simplices)# vertices of the surface triangles
+                zmean=[np.mean(tri[:,2]) for tri in tri_vertices ]# mean values of z-coordinates of
                                                                   #triangle vertices
                 min_zmean=self.vmin #np.min(zmean)
                 max_zmean=self.vmax #np.max(zmean)
@@ -591,22 +591,22 @@ class Tomogui(object):
             if self.algorithm == 'greit':
                 # print ('algorithm is greit')
                 # self.gx,self.gy,self.ds = self.controller.greit_params()
-                # self.img = self.ds 
+                # self.img = self.ds
                 if self.img is None:
                     self.img = np.zeros((32,32),dtype=float)
                     nanless = self.img[~np.isnan(self.img)]
                     flatimg = (nanless).flatten()
-                else: 
+                else:
                     nanless = self.img[~np.isnan(self.img)]
                     flatimg = (nanless).flatten()
-            else: 
+            else:
                 self.x,self.y,self.tri,self.el_pos = self.controller.plot_params()
                 if self.img is not None:
                     flatness = np.array(self.img).ravel()
                     nanless = flatness[~np.isnan(flatness)]
                     flatimg = (nanless).flatten()
 
-                else: 
+                else:
                     print ('nothing to histogram yet')
                     flatimg = [0,1,0]
             data = [go.Histogram(x=flatimg)]
@@ -628,15 +628,15 @@ class Tomogui(object):
 
             return {'data': data, 'layout': layout}
 
-        def autoscale(): 
+        def autoscale():
             print ('we are in the autoscale function')
             nanless = self.img[~np.isnan(self.img)]
             self.vmax= float(int(np.max(nanless)*100))/100.0
             self.vmin =float(int(np.min(nanless)*100))/100.0
 
-            if self.vmax <= self.vmin: # safety value. 
+            if self.vmax <= self.vmin: # safety value.
                 self.vmin = 0
-                self.vmax = 1000 
+                self.vmax = 1000
 
             display_controls(self.vmin,self.vmax)
 
@@ -646,11 +646,11 @@ class Tomogui(object):
         if connected:
             self.connected = True
         else:
-            self.connected = False 
+            self.connected = False
 
     def on_record_state_changed(self, recording):
         if recording:
             self.recording = True
         else:
-            self.recording = False 
+            self.recording = False
 

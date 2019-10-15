@@ -33,7 +33,7 @@ class BISgui(object):
     def __init__(self, controller, app):
 
         self.controller = controller
-        self.app = app         
+        self.app = app
         self.controller.register(
             "recording_state_changed",
             self.on_record_state_changed
@@ -44,20 +44,20 @@ class BISgui(object):
             self.on_connection_state_changed
         )
         self.connected = False
-        self.recording = False 
+        self.recording = False
         self.currentport = ''
         full_ports = list(serial.tools.list_ports.comports())
         self.portnames  = [item[0] for item in full_ports]
         self.mode = self.controller.serial_getmode()
         print (self.mode)
-        # b followed by \r gives bioimpedance spectroscopy data. 
+        # b followed by \r gives bioimpedance spectroscopy data.
         self.freqs = [200,500,800,1000,2000,5000,8000,10000,15000,20000,30000,40000,50000,60000,70000]
-        self.psd   = [0,0,0,0,0,0,0,0,0,0,0,0,0,0] 
+        self.psd   = [0,0,0,0,0,0,0,0,0,0,0,0,0,0]
         self.data_dict = {}
         self.data_dict = dict(zip(self.freqs, self.psd))
         self.layout = []
 
-    # Get's new data off the serial port. 
+    # Get's new data off the serial port.
     def process_data(self):
         while not self.controller.data_queue.empty():
             f,amp = self.controller.data_queue.get()
@@ -73,7 +73,7 @@ class BISgui(object):
                     href='/static/bootstrap.min.css'
                 ),
 
-                # The graph. 
+                # The graph.
                 dcc.Graph(
                     id='live-update-spectrogram',
                     animate=False,
@@ -88,16 +88,16 @@ class BISgui(object):
                     n_intervals=0
                 ),
 
-            
-            ] )      
-     
+
+            ] )
+
         @self.app.callback(
             Output('live-update-spectrogram', 'figure'),
             [Input('interval-component', 'n_intervals')])
         def update_graph_scatter(n):
             self.mode = self.controller.serial_getmode()
             if 'b'in self.mode:
-                # update the data queue. 
+                # update the data queue.
                 self.process_data()
 
             if len(self.data_dict.keys()) > 0:
@@ -133,12 +133,12 @@ class BISgui(object):
         if connected:
             self.connected = True
         else:
-            self.connected = False 
+            self.connected = False
 
     def on_record_state_changed(self, recording):
         if recording:
             self.recording = True
         else:
-            self.recording = False 
+            self.recording = False
 
 

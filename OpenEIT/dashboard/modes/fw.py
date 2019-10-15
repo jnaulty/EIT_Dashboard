@@ -16,7 +16,7 @@ import serial.tools.list_ports
 import OpenEIT.dashboard
 import queue
 
-# TODO: It would be nice to livestream the data from the serial port here. 
+# TODO: It would be nice to livestream the data from the serial port here.
 
 PORT = 8050
 S_TO_MS = 1000
@@ -39,7 +39,7 @@ class FWgui(object):
     def __init__(self, controller, app):
 
         self.controller = controller
-        self.app = app         
+        self.app = app
         self.controller.register(
             "recording_state_changed",
             self.on_record_state_changed
@@ -50,7 +50,7 @@ class FWgui(object):
             self.on_connection_state_changed
         )
         self.connected = False
-        self.recording = False 
+        self.recording = False
         self.currentport = ''
         full_ports = list(serial.tools.list_ports.comports())
         self.portnames  = [item[0] for item in full_ports]
@@ -68,7 +68,7 @@ class FWgui(object):
         self.data = ''
         self.layout = []
 
-    # Get's new data off the serial port. 
+    # Get's new data off the serial port.
     def process_data(self):
         while not self.controller.data_queue.empty():
             self.data = self.controller.data_queue.get()
@@ -87,7 +87,7 @@ class FWgui(object):
                 ),
                 html.Div( [
                     html.Div( [
-                    # the button controls      
+                    # the button controls
                     dcc.Dropdown(
                         id='name-dropdownfw',
                         options=[{'label':name, 'value':name} for name in self.portnames],
@@ -100,13 +100,13 @@ class FWgui(object):
                     html.Div( [
                     html.Button(children='Connect', id='connectbuttonfw', type='submit',className ='btn btn-outline-dark'),
                     ], className='btn-group',style={'width': '20%', 'display': 'inline-block','text-align': 'center'} ),
-   
+
                 ], style={'width': '100%', 'display': 'inline-block'} ),
 
                 html.P(''),
 
                 html.Div( [
-                    # the button controls      
+                    # the button controls
                     html.Div( [
                     dcc.Input(
                         id='send_data',
@@ -124,7 +124,7 @@ class FWgui(object):
                     html.Ul(id="datasent"),
                     ], style={'width': '20%', 'display': 'inline-block','text-align': 'center'} ),
 
-                
+
                 ], style={'width': '100%', 'display': 'inline-block'} ),
 
                 html.Div( [
@@ -134,7 +134,7 @@ class FWgui(object):
                 html.P(''),
 
                 dcc.Textarea(
-                    id ='textarea', 
+                    id ='textarea',
                     #placeholder='',
                     value='string',
                     contentEditable = False,
@@ -151,7 +151,7 @@ class FWgui(object):
                     n_intervals=0
                 ),
 
-            ] )     
+            ] )
 
         @self.app.callback(
             Output('textarea', 'value'),
@@ -163,21 +163,21 @@ class FWgui(object):
             Output('datasent', 'children'),
             [Input('send', 'n_clicks'),
             Input('send_data', 'value')]
-            )    
+            )
         def senddata(n_clicks,value):
             if n_clicks is not None:
-                if self.connected: 
+                if self.connected:
                     data_to_send = str(value) + '\n'
                     self.controller.serial_write(data_to_send)
                     #print (data_to_send)
-                    
+
                     return data_to_send
 
             return 'connect to send data'
 
         @self.app.callback(
             Output('current_mode', 'children'),
-            [Input('interval-component', 'n_intervals')])   
+            [Input('interval-component', 'n_intervals')])
         def mode(n):
             m = self.controller.serial_getmode()
             if 'a' in m:
@@ -187,11 +187,11 @@ class FWgui(object):
             elif 'c' in m:
                 return '8 electrode imaging mode'
             elif 'd' in m:
-                return '16 electrode imaging mode'   
+                return '16 electrode imaging mode'
             elif 'e' in m:
-                return '32 electrode imaging mode'                                                 
-            else: 
-                return 'another mode'         
+                return '32 electrode imaging mode'
+            else:
+                return 'another mode'
 
         @self.app.callback(
             Output(component_id='connectbuttonfw', component_property='children'),
@@ -200,34 +200,34 @@ class FWgui(object):
         )
         def connect(n_clicks, dropdown_value):
             if n_clicks is not None:
-                try: 
+                try:
                     if self.connected == False:
-                        print(str(dropdown_value))                     
+                        print(str(dropdown_value))
                         self.controller.connect(str(dropdown_value))
-                        return 'Disconnect' 
+                        return 'Disconnect'
                     else:
                         print('disconnect')
                         self.controller.disconnect()
                         return 'Connect'
-                except: 
+                except:
                     print ('problem')
-            if self.connected is True: 
-                return 'Disconnect' 
+            if self.connected is True:
+                return 'Disconnect'
             else:
                 return 'Connect'
-     
+
         return self.layout
 
     def on_connection_state_changed(self, connected):
         if connected:
             self.connected = True
         else:
-            self.connected = False 
+            self.connected = False
 
     def on_record_state_changed(self, recording):
         if recording:
             self.recording = True
         else:
-            self.recording = False 
+            self.recording = False
 
 
