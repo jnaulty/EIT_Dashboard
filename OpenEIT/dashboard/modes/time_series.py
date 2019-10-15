@@ -6,20 +6,16 @@
 """
 import logging
 import os
-import dash
 from dash.dependencies import Output, Input
 import dash_core_components as dcc
 import dash_html_components as html
-import plotly.plotly as py
 import plotly.graph_objs as go
-from flask import send_from_directory
 import serial.tools.list_ports
-import OpenEIT.dashboard
-import queue
-import time
-from datetime import datetime, timedelta
 import numpy as np
 from scipy import signal
+import OpenEIT.dashboard
+import time
+from datetime import datetime, timedelta
 
 layout = html.Div([html.H5('Hello, world!')])
 
