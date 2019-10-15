@@ -1,0 +1,28 @@
+From 5c8a81df3b74b4951cfa7b939062fd67981ff79b Mon Sep 17 00:00:00 2001
+From: John Naulty <jnaulty@gmail.com>
+Date: Fri, 26 Apr 2019 15:43:28 -0700
+Subject: [PATCH] remove link index error
+
+---
+ OpenEIT/dashboard/modes/fw.py | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/OpenEIT/dashboard/modes/fw.py b/OpenEIT/dashboard/modes/fw.py
+index 1cd3967..ec410ad 100644
+--- a/OpenEIT/dashboard/modes/fw.py
++++ b/OpenEIT/dashboard/modes/fw.py
+@@ -57,7 +57,10 @@ class FWgui(object):
+         self.portnames  = [item[0] for item in full_ports]
+ 
+         sep = ' '
+-        rest = str(full_ports[-1]).split(sep, 1)[0]
++        if len(full_ports) > 0:
++            rest = str(full_ports[-1]).split(sep, 1)[0]
++        else:
++            rest = 'none'
+ 
+         self.currentport = rest
+ 
+-- 
+2.17.1
+
