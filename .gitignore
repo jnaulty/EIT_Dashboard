@@ -1,4 +1,13 @@
-# compiled source # 
+# compiled source #
+*.egg-info/
+/.eggs/
+/build/
+/dist/
 *.pyc
+build
+*.swp
+.coverage
+__pycache__
+*.tar.gz
 .DS_Store
 .DS_Store?
