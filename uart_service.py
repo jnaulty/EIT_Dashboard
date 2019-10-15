@@ -22,36 +22,36 @@ def main():
     # Get the first available BLE network adapter and make sure it's powered on.
     adapter = ble.get_default_adapter()
     adapter.power_on()
-    print('Using adapter: {0}'.format(adapter.name))
+    print("Using adapter: {0}".format(adapter.name))
 
     # Disconnect any currently connected UART devices.  Good for cleaning up and
     # starting from a fresh state.
-    print('Disconnecting any connected UART devices...')
+    print("Disconnecting any connected UART devices...")
     UART.disconnect_devices()
 
     # Scan for UART devices.
-    print('Searching for UART device...')
+    print("Searching for UART device...")
     try:
         adapter.start_scan()
         # Search for the first UART device found (will time out after 60 seconds
         # but you can specify an optional timeout_sec parameter to change it).
         device = UART.find_device()
         if device is None:
-            raise RuntimeError('Failed to find UART device!')
+            raise RuntimeError("Failed to find UART device!")
     finally:
         # Make sure scanning is stopped before exiting.
         adapter.stop_scan()
 
-    print('Connecting to ', device.name)
+    print("Connecting to ", device.name)
     device.connect()  # Will time out after 60 seconds, specify timeout_sec parameter
-                      # to change the timeout.
+    # to change the timeout.
 
     # Once connected do everything else in a try/finally to make sure the device
     # is disconnected when done.
     try:
         # Wait for service discovery to complete for the UART service.  Will
         # time out after 60 seconds (specify timeout_sec parameter to override).
-        print('Discovering services...')
+        print("Discovering services...")
         UART.discover(device)
         # Once service discovery is complete create an instance of the service
         # and start interacting with it.
@@ -60,26 +60,26 @@ def main():
         # Write a string to the TX characteristic.
         # uart.write('a'.encode())
         # print("Sent 'Hello world!' to the device.")
-        counter = 0 
-        doodad = 0 
-        while device.is_connected: 
-            if uart is not None: 
+        counter = 0
+        doodad = 0
+        while device.is_connected:
+            if uart is not None:
                 # uart.write(b'a')
-                newdata=uart.read(timeout_sec=1)
+                newdata = uart.read(timeout_sec=1)
                 # uart.write('a\n'.encode())
                 # print ('completed uart write')
                 if newdata is None:
-                    print('ReceivedNone: {0}'.format(newdata))
+                    print("ReceivedNone: {0}".format(newdata))
                     # uart.write('b\n'.encode())
                     # print ('completed uart write')
-                else: 
-                    print('Received: {0}'.format(newdata))
-                    counter = counter + 1 
-                    if (counter > 5 and doodad == 0): 
-                       uart.write('a\n'.encode())
-                       counter = 0 # reset the counter. 
-                       doodad =1 
-                       # it's still having an issue with bioimpedance spectosopc
+                else:
+                    print("Received: {0}".format(newdata))
+                    counter = counter + 1
+                    if counter > 5 and doodad == 0:
+                        uart.write("a\n".encode())
+                        counter = 0  # reset the counter.
+                        doodad = 1
+                        # it's still having an issue with bioimpedance spectosopc
                     # break
 
         # Now wait up to one minute to receive data from the device.
@@ -92,7 +92,7 @@ def main():
         #     # Timeout waiting for data, None is returned.
         #     print('Received no data!')
     finally:
-        print('this is where disconnect should go')
+        print("this is where disconnect should go")
         # dis = DeviceInformation(device)
         # Make sure device is disconnected on exit.
         # device.disconnect()

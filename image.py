@@ -1,7 +1,9 @@
 from plotly import __version__
 from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
-print (__version__) # requires version >= 1.9.0
+
+print(__version__)  # requires version >= 1.9.0
 import plotly as py
+
 # py.tools.set_credentials_file(username='jeantoul', api_key='CSg2CWv44LpZjFwrotL2')
 # from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
 # jeantoul
@@ -49,19 +51,24 @@ z = (np.cos(radii) * np.cos(3 * angles)).flatten()
 triang = tri.Triangulation(x, y)
 
 # Mask off unwanted triangles.
-triang.set_mask(np.hypot(x[triang.triangles].mean(axis=1),
-                         y[triang.triangles].mean(axis=1))
-                < min_radius)
+triang.set_mask(
+    np.hypot(x[triang.triangles].mean(axis=1), y[triang.triangles].mean(axis=1))
+    < min_radius
+)
 # self.topplot = self.topimageplt.tripcolor(self.x,self.y, self.tri, self.img,
 #      shading='flat', alpha=0.90, cmap=plt.cm.viridis,vmin=self.min_cbar,vmax=self.max_cbar)
 
 # triang, z, shading='flat'
 
-fig1 = FF.create_trisurf(x=x, y=y, z=z,
-                         colormap=['rgb(50, 0, 75)', 'rgb(200, 0, 200)', '#c8dcc8'],
-                         show_colorbar=True,
-                         simplices=triang,
-                         title="Boy's Surface")        
+fig1 = FF.create_trisurf(
+    x=x,
+    y=y,
+    z=z,
+    colormap=["rgb(50, 0, 75)", "rgb(200, 0, 200)", "#c8dcc8"],
+    show_colorbar=True,
+    simplices=triang,
+    title="Boy's Surface",
+)
 
 # fig1 = FF.create_trisurf(x=x, y=y, z=z,
 #                          colormap=['rgb(50, 0, 75)', 'rgb(200, 0, 200)', '#c8dcc8'],
